@@ -13,6 +13,7 @@ namespace MyGame
     {
         static void Main(string[] args)
         {
+            // Запуск формы меню
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);         
             Application.Run(new SplashScreen());    
@@ -20,9 +21,15 @@ namespace MyGame
         }
         static public void NewGame()
         {
-            Form form = new Form();
-            form.Width = 800;
-            form.Height = 600;
+            //запуск основной формы игры 
+            Form form = new Form()
+            {
+                //Width = Screen.PrimaryScreen.Bounds.Width,
+                //Height = Screen.PrimaryScreen.Bounds.Height
+
+                Width = 1000,
+                Height = 1000
+            };
             Game.Init(form);
             form.Show();
             Game.Draw();

@@ -14,20 +14,18 @@ namespace MyGame
         {
 
         }
-        Image newImage = Image.FromFile("moon.jpg");
-        public override void Draw()
-        {
-            
-            
-            Game.Buffer.Graphics.DrawImage(newImage, Pos.X, Pos.Y, Size.Width, Size.Height);
 
+        Image newImage = Image.FromFile("moon.jpg");//загрузка .jpg файла вынесена из тела метода Draw(); изменен путь файла
+
+        public override void Draw()
+        {                       
+            Game.Buffer.Graphics.DrawImage(newImage, Pos.X, Pos.Y, Size.Width, Size.Height);
         }
         public override void Update()
         {
             Pos.X = Pos.X + Dir.X;
 
             if (Pos.X < 0) Pos.X = Game.Width + Size.Width;
-
         }
     }
 }
