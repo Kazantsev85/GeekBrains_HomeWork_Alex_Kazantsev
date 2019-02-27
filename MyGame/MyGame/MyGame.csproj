@@ -48,7 +48,9 @@
     <Compile Include="Asteroid.cs" />
     <Compile Include="BaseObject.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="Health.cs" />
     <Compile Include="ICollision.cs" />
+    <Compile Include="Ship.cs" />
     <Compile Include="SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>

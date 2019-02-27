@@ -20,12 +20,8 @@ namespace MyGame
         }
         public override void Update()
         {
-            Pos.X = Pos.X + 3;            
-            if (Pos.X > Game.Width) Pos.X = 0;
-        }
-        public override void Regeneration() // регенерация снаряда, вызывается после пересечения с астероидом 
-        {
-            Pos.X = 0;
-        }
+            Pos.X = Pos.X + 50;            
+            if (Pos.X > Game.Width) Game.bullet = null;
+        }        
     }
 }

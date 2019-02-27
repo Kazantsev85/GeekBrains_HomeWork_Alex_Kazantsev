@@ -19,6 +19,7 @@ namespace MyGame
             Dir = dir;
             Size = size;
         }
+        public delegate void Message(); // делегат для обработки гибели корабля
         public abstract void Draw();
         
         public abstract void Update();

@@ -19,6 +19,7 @@ namespace MyGame
         {
             Game.Buffer.Graphics.FillEllipse(Brushes.Orange, Pos.X, Pos.Y, Size.Width, Size.Height);
         }
+
         public override void Update()
         {            
 
