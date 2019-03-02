@@ -10,11 +10,16 @@ namespace MyGame
 {
     class Asteroid : BaseObject
     {
+        public static event Action<string> CreateAsteroid; //Событие оповещает о создании астероида
+        public static event Action<string> RegenerateAsteroid; //Событие оповещает о обновлении астероида
+        //public static event Action<string> AsteroodCollision; //Событие оповещает о уничтожении астероида
         public int Power { get; set; }
         public Asteroid(Point pos, Point dir, Size size) : base(pos, dir, size)
         {
+            CreateAsteroid?.Invoke($"{DateTime.Now}: Астероид создан."); //Вызов события создания астероида в конструкторе
             Power = 1;
-        }
+        }      
+        
         public override void Draw()
         {
             Game.Buffer.Graphics.FillEllipse(Brushes.Orange, Pos.X, Pos.Y, Size.Width, Size.Height);
@@ -25,7 +30,10 @@ namespace MyGame
 
                Pos.X = Pos.X + Dir.X;
 
-               if (Pos.X < 0) Regeneration();
+               if (Pos.X < 0)
+                {
+                Regeneration();                
+                }
         }
         public override void Regeneration() // регенерация астероида, вызывается после пересечения со снарядом и поле ухода за границу экрана
         {
@@ -40,8 +48,25 @@ namespace MyGame
             Size.Height = r;
 
             Game.Buffer.Graphics.FillEllipse(Brushes.Orange, Pos.X, Pos.Y, Size.Width, Size.Height);
-
+            RegenerateAsteroid?.Invoke($"{DateTime.Now}: Астероид обновлен.");
         }
+        public void AsteroidShootedDown()
+        /// метод создан для разделения записи в журнале. Поскольку метод Regeneration используется для обновления астероидов,
+        /// как после ухода за экран так и после уничтожения. Теперь после столкновения с кораблем или снарядом вызывается метод
+        /// AsteroidShootDown который вызывает тот же Regeneration и дополнительно событие AsteroodCollision  
+        {
+            Regeneration();
+            RegenerateAsteroid?.Invoke($"{DateTime.Now}: Астероид уничтожен."); // Вызов события уничтожения астероида
+        }
+        public void ShipShootedDown()
+        /// метод создан для разделения записи в журнале. Поскольку метод Regeneration используется для обновления астероидов,
+        /// как после ухода за экран так и после уничтожения. Теперь после столкновения с кораблем или снарядом вызывается метод
+        /// AsteroidShootDown который вызывает тот же Regeneration и дополнительно событие AsteroodCollision  
+        {
+            Regeneration();
+            RegenerateAsteroid?.Invoke($"{DateTime.Now}: Корабль уничтожен."); // Вызов события уничтожения астероида
+        }
+
 
     }
 }

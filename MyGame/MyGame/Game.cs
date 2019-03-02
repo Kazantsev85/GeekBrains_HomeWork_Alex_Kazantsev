@@ -8,8 +8,7 @@ using System.Drawing;
 
 
 namespace MyGame
-{
-    //public delegate void Log();
+{   
     static class Game
     {
         private static BufferedGraphicsContext _context;
@@ -33,6 +32,9 @@ namespace MyGame
 
         public static void Init (Form form)
         {
+            Asteroid.CreateAsteroid += s => Console.WriteLine(s); 
+            //Asteroid.AsteroodCollision += s => Console.WriteLine(s);
+            Asteroid.RegenerateAsteroid += s => Console.WriteLine(s);
             Graphics g;
             _context = BufferedGraphicsManager.Current;
             g = form.CreateGraphics();
@@ -56,6 +58,7 @@ namespace MyGame
             form.KeyDown += Form_KeyDown;
 
             Ship.MessageDie += Finish; //подписка на событие гибели корабля
+            
         }
         private static void Form_KeyDown(object sender, KeyEventArgs e)
         {
@@ -115,15 +118,15 @@ namespace MyGame
                 {
                     ship?.HitsUpdate();                    
                     System.Media.SystemSounds.Hand.Play();
-                    asteroids[i].Regeneration();
-                    
+                    asteroids[i].AsteroidShootedDown();// регенерирует новый астероид после столкновения со снарядом
+
                     bullet = null;
                     continue;
                 }
                 if (!ship.Collision(asteroids[i])) continue;                
                 ship?.EnergyLow();
                 System.Media.SystemSounds.Asterisk.Play();
-                asteroids[i].Regeneration(); // регенерирует новый астероид после столкновения с кораблем
+                asteroids[i].ShipShootedDown(); // регенерирует новый астероид после столкновения с кораблем
                 if (ship.Energy <= 0) ship?.Die();
             }
             if (health!=null && ship.Collision(health) && ship.Energy < 3)
