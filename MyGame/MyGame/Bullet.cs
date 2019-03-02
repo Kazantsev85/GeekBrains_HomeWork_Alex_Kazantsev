@@ -14,14 +14,16 @@ namespace MyGame
         {
 
         }
+        Image newImage = Image.FromFile("laser.jpg");
         public override void Draw()
         {
-            Game.Buffer.Graphics.DrawEllipse(Pens.OrangeRed, Pos.X, Pos.Y, Size.Width, Size.Height);
+            //Game.Buffer.Graphics.DrawEllipse(Pens.OrangeRed, Pos.X, Pos.Y, Size.Width, Size.Height);
+            Game.Buffer.Graphics.DrawImage(newImage, Pos.X, Pos.Y, Size.Width, Size.Height);
         }
         public override void Update()
         {
             Pos.X = Pos.X + 50;            
-            if (Pos.X > Game.Width) Game.bullet = null;
-        }        
+        }
+        
     }
 }

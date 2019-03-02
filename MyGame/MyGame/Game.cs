@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections.Generic;
 
 
 namespace MyGame
@@ -20,8 +21,10 @@ namespace MyGame
         static Game()
         {
         }
-        
-        public static Bullet bullet;
+
+        //public static Bullet bullet;
+        public static List<Bullet> bullets = new List<Bullet>();// cоздаем коллекцию пуль
+
         private static Moon moon;
         private static Planet planet;
         public static Ship ship;
@@ -61,8 +64,9 @@ namespace MyGame
             
         }
         private static void Form_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (bullet == null && e.KeyCode == Keys.ControlKey) bullet = new Bullet(new Point(ship.Rect.X+70, ship.Rect.Y), new Point(5, 0), new Size(4, 1));
+        {            
+            // добавляем новую пулю в коллекцию при выстреле
+            if (e.KeyCode == Keys.ControlKey) bullets.Add ( new Bullet(new Point(ship.Rect.X+70, ship.Rect.Y), new Point(5, 0), new Size(10, 3)));
             if (e.KeyCode == Keys.Up) ship.Up();
             if (e.KeyCode == Keys.Down) ship.Down();
         }
@@ -82,9 +86,12 @@ namespace MyGame
 
             moon.Draw();
             planet.Draw();
-            bullet?.Draw();
+            //bullet?.Draw();
             health.Draw();
             ship?.Draw();
+
+            foreach (Bullet b in bullets)
+                b.Draw();
 
             foreach (BaseObject obj in _objs)
                 obj.Draw();
@@ -106,21 +113,29 @@ namespace MyGame
             
             moon.Update();            
             planet.Update();
-            bullet?.Update();                      
+            //bullet?.Update();                      
             health.Update();
             ship?.Update();
+
+            foreach (Bullet b in bullets)            
+                b.Update();
+            
+
+
 
             for (var i = 0; i < asteroids.Length; i++)
             {
                 if (asteroids[i] == null) continue;
                 asteroids[i].Update();
-                if (bullet != null && bullet.Collision(asteroids[i]))
+                for (int j = 0; j < bullets.Count; j++)
+                if (asteroids != null && bullets[j].Collision(asteroids[i]))
                 {
                     ship?.HitsUpdate();                    
                     System.Media.SystemSounds.Hand.Play();
                     asteroids[i].AsteroidShootedDown();// регенерирует новый астероид после столкновения со снарядом
 
-                    bullet = null;
+                    bullets.RemoveAt(j);
+                        j--;
                     continue;
                 }
                 if (!ship.Collision(asteroids[i])) continue;                
@@ -134,6 +149,7 @@ namespace MyGame
                 ship?.EnergyUp();
                 health.Regeneration();
             }
+           
         }
 
         public static BaseObject[] _objs;

@@ -12,7 +12,7 @@ namespace MyGame
     {
         public static event Action<string> CreateAsteroid; //Событие оповещает о создании астероида
         public static event Action<string> RegenerateAsteroid; //Событие оповещает о обновлении астероида
-        //public static event Action<string> AsteroodCollision; //Событие оповещает о уничтожении астероида
+        
         public int Power { get; set; }
         public Asteroid(Point pos, Point dir, Size size) : base(pos, dir, size)
         {
@@ -52,19 +52,17 @@ namespace MyGame
         }
         public void AsteroidShootedDown()
         /// метод создан для разделения записи в журнале. Поскольку метод Regeneration используется для обновления астероидов,
-        /// как после ухода за экран так и после уничтожения. Теперь после столкновения с кораблем или снарядом вызывается метод
-        /// AsteroidShootDown который вызывает тот же Regeneration и дополнительно событие AsteroodCollision  
+        /// как после ухода за экран и уничтожения так и после столкновения с кораблем
         {
             Regeneration();
             RegenerateAsteroid?.Invoke($"{DateTime.Now}: Астероид уничтожен."); // Вызов события уничтожения астероида
         }
         public void ShipShootedDown()
         /// метод создан для разделения записи в журнале. Поскольку метод Regeneration используется для обновления астероидов,
-        /// как после ухода за экран так и после уничтожения. Теперь после столкновения с кораблем или снарядом вызывается метод
-        /// AsteroidShootDown который вызывает тот же Regeneration и дополнительно событие AsteroodCollision  
+        /// как после ухода за экран и уничтожения так и после столкновения с кораблем 
         {
             Regeneration();
-            RegenerateAsteroid?.Invoke($"{DateTime.Now}: Корабль уничтожен."); // Вызов события уничтожения астероида
+            RegenerateAsteroid?.Invoke($"{DateTime.Now}: Корабль уничтожен."); // Вызов события уничтожения корабля
         }
 
 
