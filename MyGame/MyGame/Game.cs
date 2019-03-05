@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Collections.Generic;
+
 
 
 namespace MyGame
@@ -14,16 +14,19 @@ namespace MyGame
     {
         private static BufferedGraphicsContext _context;
         public static BufferedGraphics Buffer;
-
+        public static int AstLength = 3; // определяет изначальное количество астероидов в коллекции
         public static int Width { get; set; }
-        public static int Height { get; set; }
-                       
+        public static int Height { get; set; }        
+
         static Game()
         {
         }
 
-        //public static Bullet bullet;
+        
         public static List<Bullet> bullets = new List<Bullet>();// cоздаем коллекцию пуль
+        
+        public static List<Asteroid> asteroidsList = new List<Asteroid>(); // создаем коллекцию астероидов
+        
 
         private static Moon moon;
         private static Planet planet;
@@ -31,7 +34,7 @@ namespace MyGame
         private static Health health;
         
 
-        private static Timer timer = new Timer { Interval = 100 }; // таймер вынесен из метода Init        
+        private static Timer timer = new Timer { Interval = 100 }; // таймер вынесен из метода Init             
 
         public static void Init (Form form)
         {
@@ -60,8 +63,7 @@ namespace MyGame
             timer.Tick += Timer_Tick;
             form.KeyDown += Form_KeyDown;
 
-            Ship.MessageDie += Finish; //подписка на событие гибели корабля
-            
+            Ship.MessageDie += Finish; //подписка на событие гибели корабля            
         }
         private static void Form_KeyDown(object sender, KeyEventArgs e)
         {            
@@ -80,26 +82,20 @@ namespace MyGame
             Update();
         }
         public static void Draw()
-        {   
-            
+        {               
             Buffer.Graphics.Clear(Color.Black);
 
             moon.Draw();
-            planet.Draw();
-            //bullet?.Draw();
+            planet.Draw();           
             health.Draw();
             ship?.Draw();
-
             foreach (Bullet b in bullets)
                 b.Draw();
-
             foreach (BaseObject obj in _objs)
                 obj.Draw();
-            foreach (BaseObject objects in asteroids)
-                objects?.Draw();
+            foreach (BaseObject objects in asteroidsList)
+                objects?.Draw();         
             
-            
-
             if (ship != null)
                 Buffer.Graphics.DrawString("Energy:" + ship.Energy, SystemFonts.DefaultFont, Brushes.White, 0, 0);
                 Buffer.Graphics.DrawString("Hits:" + ship.Hits, SystemFonts.DefaultFont, Brushes.White, 100, 0);
@@ -108,52 +104,73 @@ namespace MyGame
         public static void Update()
         {
             foreach (BaseObject obj in _objs)
-                obj.Update();
-            
+                obj.Update();            
             
             moon.Update();            
-            planet.Update();
-            //bullet?.Update();                      
+            planet.Update();                                
             health.Update();
             ship?.Update();
 
+            foreach (BaseObject objects in asteroidsList)
+                objects?.Update();
             foreach (Bullet b in bullets)            
                 b.Update();
             
+            for (var i = 0; i < asteroidsList.Count; i++)
+            {                
+                if (asteroidsList[i] == null) continue;
+                asteroidsList[i].Update();
 
-
-
-            for (var i = 0; i < asteroids.Length; i++)
-            {
-                if (asteroids[i] == null) continue;
-                asteroids[i].Update();
-                for (int j = 0; j < bullets.Count; j++)
-                if (asteroids != null && bullets[j].Collision(asteroids[i]))
+                if (ship.Collision(asteroidsList[i])) // столкновение корабля с астероидом
                 {
-                    ship?.HitsUpdate();                    
-                    System.Media.SystemSounds.Hand.Play();
-                    asteroids[i].AsteroidShootedDown();// регенерирует новый астероид после столкновения со снарядом
-
-                    bullets.RemoveAt(j);
-                        j--;
-                    continue;
+                    ship?.EnergyLow();
+                    System.Media.SystemSounds.Asterisk.Play();
+                    asteroidsList[i].ShipShootedDown(); // регенерирует новый астероид после столкновения с кораблем и уменьшает количество энергии корабля
+                    if (ship.Energy <= 0) ship?.Die();
                 }
-                if (!ship.Collision(asteroids[i])) continue;                
-                ship?.EnergyLow();
-                System.Media.SystemSounds.Asterisk.Play();
-                asteroids[i].ShipShootedDown(); // регенерирует новый астероид после столкновения с кораблем
-                if (ship.Energy <= 0) ship?.Die();
+
+                for (int j = 0; j < bullets.Count; j++)
+                {
+                    if (bullets[j].Collision(asteroidsList[i]))
+                    {
+                        
+                        
+                        ship?.HitsUpdate();
+                        System.Media.SystemSounds.Hand.Play();
+                        asteroidsList[i].AsteroidShootedDown();// увеличивает счетчик сбитых астероидов
+
+                        asteroidsList.RemoveAt(i);//удаляет сбитый астероид из коллекции
+                        i--;
+
+                        if (asteroidsList.Count == 0) //Если все астероиды сбиты, увеличивает число астероидов на 1 и заново заполняет коллекцию астероидов
+                        {
+                            AstLength++;
+                            AsteroidLoad(AstLength);
+                        }
+
+                        bullets.RemoveAt(j);
+                        j--;
+
+                        continue;
+                    }
+                    if (bullets[j].Xx > Width) // Получает координату Х пули и удаляет ее из коллекции если она покидает экран.
+                    {
+                        bullets.RemoveAt(j);
+                        j--;
+                        continue;
+                    }
+                }                    
             }
+
             if (health!=null && ship.Collision(health) && ship.Energy < 3)
             {
                 ship?.EnergyUp();
                 health.Regeneration();
-            }
-           
+            }           
         }
 
         public static BaseObject[] _objs;
-        private static Asteroid[] asteroids;
+        //private static Asteroid[] asteroids;
 
         public static void Load()
         {
@@ -161,23 +178,31 @@ namespace MyGame
             
             planet = new Planet(new Point(600, 40), new Point(-1, 0), new Size(20, 20));
             moon = new Moon(new Point(600, 100), new Point(-1, 0), new Size(40, 40));         
-            ship = new Ship(new Point(10, 400), new Point(5, 5), new Size(70, 40));            
+            ship = new Ship(new Point(10, 400), new Point(5, 5), new Size(70, 40));
 
-            asteroids = new Asteroid[3];
+            
             var rnd = new Random();
             for (var i = 0; i < _objs.Length; i++)
             {
                 int r = rnd.Next(15, 50);
                 _objs[i] = new Star(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r, r), new Size(3, 3));
             }
-            for (var i = 0; i < asteroids.Length; i++)
-            {
-                int r = rnd.Next(5, 50);
-                asteroids[i] = new Asteroid(new Point(1000,rnd.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r));
-            }
+            // Загрузка астероидов реализована в отдельном методе AsteroidLoad.
+            AsteroidLoad(AstLength);
             int rd = rnd.Next(5, 50);
             health = new Health(new Point(1000, rnd.Next(0,Game.Height)), new Point(-rd/5, rd), new Size(40, 40));
         }
+
+        public static void AsteroidLoad(int Count)
+        {
+            var rnd = new Random();
+            for (var i = 0; i < Count; i++)
+            {
+                int r = rnd.Next(5, 50);
+                asteroidsList.Add(new Asteroid(new Point(1000, rnd.Next(0, Game.Height)), new Point(-r / 5, r), new Size(r, r)));
+            }
+        }
+
         public static void Finish()
         {
             timer.Stop();

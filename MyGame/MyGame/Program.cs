@@ -28,7 +28,7 @@ namespace MyGame
                 //Height = Screen.PrimaryScreen.Bounds.Height
 
                 Width = 1000,
-                Height = 1000
+                Height = 800
             };
             Game.Init(form);
             form.Show();

@@ -17,7 +17,7 @@ namespace MyGame
         public Asteroid(Point pos, Point dir, Size size) : base(pos, dir, size)
         {
             CreateAsteroid?.Invoke($"{DateTime.Now}: Астероид создан."); //Вызов события создания астероида в конструкторе
-            Power = 1;
+           Power = 1;
         }      
         
         public override void Draw()
@@ -54,7 +54,7 @@ namespace MyGame
         /// метод создан для разделения записи в журнале. Поскольку метод Regeneration используется для обновления астероидов,
         /// как после ухода за экран и уничтожения так и после столкновения с кораблем
         {
-            Regeneration();
+            //Regeneration();
             RegenerateAsteroid?.Invoke($"{DateTime.Now}: Астероид уничтожен."); // Вызов события уничтожения астероида
         }
         public void ShipShootedDown()
