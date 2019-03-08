@@ -5,8 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Workers"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="WorkersWPF" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="19*"/>
+            <RowDefinition Height="65*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="281*"/>
+            <ColumnDefinition Width="492*"/>
+            <ColumnDefinition Width="21*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Add Department" HorizontalAlignment="Left" Height="20" Margin="159,69,0,0" VerticalAlignment="Top" Width="97" Click="Button_Click" RenderTransformOrigin="1.036,0.231"/>
+        <TextBox x:Name="TextBox1" HorizontalAlignment="Left" Height="20" Margin="10,40,0,0" TextWrapping="Wrap" Text="Department Name" VerticalAlignment="Top" Width="130"/>
+        <TextBox x:Name="TextBox2" HorizontalAlignment="Left" Height="20" Margin="10,70,0,0" TextWrapping="Wrap" Text="Depertment Location" VerticalAlignment="Top" Width="130" RenderTransformOrigin="0.484,2.198"/>
+        <TextBox x:Name="TextBox3" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="10.2,40,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="TextBox6" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="10.2,69,0,0" TextWrapping="Wrap" Text="Department" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.484,-0.549"/>
+        <Label Content="Add new  Department" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.313,-0.064" Width="261" Height="26"/>
+        <Label Content="Add new Employee" Grid.Column="1" HorizontalAlignment="Left" Margin="10.2,10,0,0" VerticalAlignment="Top" Width="365" Height="26"/>
+        <TextBox x:Name="TextBox5" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="250.2,39,0,0" TextWrapping="Wrap" Text="Occupation" VerticalAlignment="Top" Width="106"/>
+        <TextBox x:Name="TextBox7" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="135.2,69,0,0" TextWrapping="Wrap" Text="Age" VerticalAlignment="Top" Width="106"/>
+        <TextBox x:Name="TextBox8" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="250.2,69,0,0" TextWrapping="Wrap" Text="Salary" VerticalAlignment="Top" Width="111"/>
+        <Button Content="Add Employee" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="371.2,69,0,0" VerticalAlignment="Top" Width="111" Click="Button_Click_1"/>
+        <TextBox x:Name="TextBox4" Grid.Column="1" HorizontalAlignment="Left" Height="19" Margin="135.2,41,0,0" TextWrapping="Wrap" Text="Surname" VerticalAlignment="Top" Width="110"/>
+        <Label Content="Departments" HorizontalAlignment="Left" Margin="10,28.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="130" RenderTransformOrigin="0.498,0.113"/>
+        <TextBlock x:Name="TextBlock1" HorizontalAlignment="Left" Height="248" Margin="10,66.8,0,0" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="246"/>
+        <Button Content="Refrash" HorizontalAlignment="Left" Height="20" Margin="159,30.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="70" Click="Button_Click_2"/>
+
     </Grid>
 </Window>
