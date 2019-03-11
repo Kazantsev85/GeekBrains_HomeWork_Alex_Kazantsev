@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,19 +23,23 @@ namespace Workers
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        Program prog = new Program();
+        ObservableCollection<string> items = new ObservableCollection<string>();// коллекция элементов для ListBox1. Имена департаментов
+        //ObservableCollection<Department> items = new ObservableCollection<Department>(); // коллекция элементов для ListBox1. Имена департаментов
         public MainWindow()
-        {
+        {           
             InitializeComponent();
-        }
-        // Нажатие кнопки NEW DEPARTMENT. Считывает данные из двух текст боксов и записывает их в текстовый файл Departments.txt
+            MainGrid.DataContext = prog;            
+        }        
+        // Нажатие кнопки NEW DEPARTMENT. Считывает данные из двух текст боксов, создает новый экземпляр департамена и добавляет его в основную коллекцию департаментов
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string Name = TextBox1.Text;
-            string Location = TextBox2.Text;           
-            
-            Department Dep = new Department( Name, Location);
-            Dep.AddToDataBase();           
+            string Location = TextBox2.Text;
 
+            Department Dep = new Department(Name, Location);
+            prog.DepAddToDataBase(Dep);
         }
         // Нажатие кнопки NEW EMPLOYEE. Считывает данные из текст боксов и записывает их в текстовый файл Employee.txt
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -50,24 +56,32 @@ namespace Workers
 
         }
 
-        public static List<string> deplist = new List<string>();
-        
+        public static List<string> deplist = new List<string>();        
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-                                                  
-
-            StreamReader DepartmentsList = new StreamReader("Departments.txt");            
-
-            while (!DepartmentsList.EndOfStream) 
+            prog.DepClearDataBase();
+            TextBlock1.Text = "";
+            prog.DepGetFromDataBase();
+            FillDepList();
+            foreach (Department D in prog.Dep)
             {
-                deplist.Add(DepartmentsList.ReadLine());                
+                TextBlock1.Text += D.Name + " " + D.Location;
+            }                   
+        }
+        void FillDepList()
+        {
+            for (int j = 0; j < items.Count; j++)
+            {
+                items.RemoveAt(j);
             }
-            
-            for (var i = 0; i < deplist.Count; i++)
+            for (var i = 0; i < prog.Dep.Count; i++)
             {
-                TextBlock1.Text += deplist[i]+"\n";                                
-            }           
+                items.Add(prog.Dep[i].Name);
+            }
+            //items = prog.Dep;
+            ListBox1.ItemsSource = items;
+
         }
     }
 }
